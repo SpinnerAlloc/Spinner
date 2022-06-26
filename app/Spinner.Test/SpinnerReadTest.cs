@@ -1,10 +1,13 @@
 using Xunit;
 using System.Linq;
+using Spinner.Test.Models;
+using System;
+using Spinner.Exceptions;
 
 namespace Spinner.Test
 {
     public class SpinnerReadTest
-    {        
+    {
         [Fact]
         public void ReadFromString_WhenCalled_ShoudReturnObjectMappedFromString()
         {
@@ -95,6 +98,40 @@ namespace Spinner.Test
             Assert.Equal(2, props.Count());
             Assert.Equal("Name", props.First().Name);
             Assert.Equal("Adress", props.Last().Name);
+        }
+
+        [Fact]
+        public void ReadFromString_WhenCalled_ShouldNotThrowExceptionIfNotExistsAnyPropertiesWithReadPropertyAttribute()
+        {
+            Action act = () =>
+            {
+                // Arrange
+                Spinner<NothingNoAttibute> spinnerReader = new Spinner<NothingNoAttibute>();
+
+                // Act                    
+                spinnerReader.ReadFromString("");
+            };
+
+            // Assert
+            var ex = Assert.Throws<PropertyNotMappedException>(act);
+            Assert.Equal("Property Name should have ReadProperty configured.", ex.Message);
+        }
+
+        [Fact]
+        public void ReadFromSpan_WhenCalled_ShouldNotThrowExceptionIfNotExistsAnyPropertiesWithReadPropertyAttribute()
+        {
+            Action act = () =>
+            {
+                // Arrange
+                Spinner<NothingNoAttibute> spinnerReader = new Spinner<NothingNoAttibute>();
+
+                // Act                    
+                spinnerReader.ReadFromSpan("");
+            };
+
+            // Assert
+            var ex = Assert.Throws<PropertyNotMappedException>(act);
+            Assert.Equal("Property Name should have ReadProperty configured.", ex.Message);
         }
     }
 }

@@ -1,21 +1,21 @@
 ﻿using Spinner.Attribute;
 using System;
 
-namespace Spinner.Test
+namespace Spinner.Test.Models
 {
     [ObjectMapper(length: 50)]
     internal class NothingReader : IEquatable<NothingReader>
     {
-        [ReadProperty(start:1, length: 19 )]        
-        public string Name { get; private set; }
+        [ReadProperty(start: 1, length: 19)]
+        public string Name { get; set; }
 
-        [ReadProperty(start: 20, length: 30)]        
-        public string Adress { get; private set; }
-              
+        [ReadProperty(start: 20, length: 30)]
+        public string Adress { get; set; }
+
         public bool Equals(NothingReader other)
         {
-            return this.Name == other.Name &&
-                  this.Adress == other.Adress;
+            return Name == other.Name &&
+                  Adress == other.Adress;
         }
 
         public override bool Equals(object obj)

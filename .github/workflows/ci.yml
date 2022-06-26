@@ -12,7 +12,7 @@ jobs:
   build:
     env:
       APP: "${{ github.workspace }}/app"
-      PROJECT_TEST: "${{ github.workspace }}/app/Spinner.Test/"
+      PROJECT_TEST: "${{ github.workspace }}/app/Spinner.Test"
       PROJECT_SLN: "./app/Spinner.sln"
       PROJECT_BIN3: "./app/Spinner/bin/Release/netcoreapp3"
       PROJECT_BIN3_1: "./app/Spinner/bin/Release/netcoreapp3.1"
@@ -42,6 +42,9 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
+      - name: Setup Stryker 📦
+        run: dotnet tool install -g dotnet-stryker
+
       - name: Restore Dependencies 📦
         run: dotnet restore ${{env.PROJECT_SLN }}
 
@@ -50,6 +53,12 @@ jobs:
 
       - name: Test 🧪
         run: dotnet test ${{env.PROJECT_SLN }} --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+      - name: Mutant Test 🧪👾
+        if: github.event_name == 'pull_request'
+        run: |
+          cd ${{ env.PROJECT_TEST}}
+          dotnet stryker --reporter "progress"
 
       - name: Run Infer .Net 3.0 🔍
         uses: microsoft/infersharpaction@v1.2
